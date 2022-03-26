@@ -1,0 +1,14 @@
+export 'flash/binding/flash.dart';
+export 'home/binding/home.dart';
+export 'chat/binding/chat.dart';
+export 'login/binding/login.dart';
+export 'profile/binding/profile.dart';
+export 'setting/binding/setting.dart';
+export 'user/binding/user.dart';
+export 'introduction/binding/introduction.dart';
+export 'discover/binding/discover.dart';
+export 'category/binding/category.dart';
+export 'messages/binding/messages.dart';
+export 'about/binding/about.dart';
+export 'service/binding/service.dart';
+export 'list_profile/binding/list_profile.dart';
