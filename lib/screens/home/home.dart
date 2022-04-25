@@ -1,236 +1,143 @@
-import 'package:flutter/material.dart';
-import 'package:mobile/screens/base/base_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:mobile/lang/string_constant.dart';
+import 'package:mobile/screens/base/base_screen.dart';
 import 'package:mobile/screens/home/controller/home.dart';
-import 'package:mobile/screens/home/widget/bottom_sheet.dart';
-import 'package:mobile/screens/home/widget/map.dart';
-import 'package:mobile/theme/theme.dart';
-import 'package:get/get.dart';
+import 'package:mobile/screens/home/widget/anwser_card.dart';
+import 'package:mobile/screens/home/widget/ask_floatingactionbutton.dart';
+import 'package:mobile/shared/constants/constants.dart';
+import 'package:mobile/widgets/my_scaffold.dart';
+
+import 'model/user_post.dart';
 
 class Home extends BaseScreen<HomeController> {
   const Home({Key? key}) : super(key: key);
-
   @override
   Widget body() {
-    return Scaffold(
-      body: _Body(
+    return MyScaffold(
+      body: _Body(controller: controller),
+      title: 'Chat app',
+      centerTitle: true,
+      backgroundTransparent: false,
+      leading: IconButton(
+        onPressed: controller.onProfilePress,
+        icon: const Icon(FontAwesomeIcons.user),
+      ),
+      actions: [
+        IconButton(
+          onPressed: controller.onChatPress,
+          icon: const Icon(FontAwesomeIcons.commentAlt),
+        )
+      ],
+      floatingActionButton: CustomFloatingActionButton(
         controller: controller,
       ),
-    );
-  }
-}
-
-class _Title extends StatelessWidget {
-  const _Title({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-      'Discover',
-      style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-        fontSize: 20.0,
-      ),
+      floatingActionButtonCenter: true,
     );
   }
 }
 
 class _Body extends StatelessWidget {
-  final HomeController controller;
   const _Body({Key? key, required this.controller}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CustomMap(controller: controller),
-        Positioned(
-          child: _AppBar(
-            controller: controller,
-          ),
-          left: 0,
-          right: 0,
-          top: 0,
-        ),
-        Positioned(
-          child: _NavigationBar(
-            controller: controller,
-          ),
-          left: 0,
-          right: 0,
-          bottom: 0,
-        ),
-      ],
-    );
-  }
-}
-
-class _AppBar extends StatelessWidget {
   final HomeController controller;
-  const _AppBar({Key? key, required this.controller}) : super(key: key);
+
+  final double cardHeight = 100;
+  final double paddingBetweenCard = 7;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF343434).withOpacity(0.4),
-            const Color(0xFF343434).withOpacity(0.0),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            onTap: controller.onProfilePress,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black.withOpacity(0.3)),
-              child: const Icon(
-                CupertinoIcons.gear,
-                color: Colors.white,
-                size: 23,
+          GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: paddingBetweenCard,
+            mainAxisSpacing: paddingBetweenCard + 5,
+            scrollDirection: Axis.vertical,
+            childAspectRatio: 2,
+            shrinkWrap: true,
+            children: const [
+              _Banner(
+                title: "Nearby",
+                color: '#20bf55',
               ),
+              _Banner(
+                title: "People",
+                color: '#01baef',
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  StringConstant.list.tr,
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                GestureDetector(
+                  onTap: controller.onButtonFilterPress,
+                  child: const Icon(
+                    Icons.filter_list,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ],
             ),
           ),
-          const _Title(),
-          InkWell(
-            onTap: controller.onChatPress,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black.withOpacity(0.3)),
-              child: const Icon(
-                Icons.chat_bubble_outline,
-                color: Colors.white,
-                size: 23,
-              ),
-            ),
-          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.model.listPost?.length,
+            itemBuilder: (BuildContext context, int index) {
+              UserPost post = controller.model.listPost![index];
+              return AnswerCard(
+                index: index,
+                avatar: post.user?.avatar,
+                question: post.question?.content,
+                answer: post.content,
+                age: controller.getAge(post.user?.birthday ?? 0),
+                name: post.user?.name,
+                liked: post.liked,
+                controller: controller,
+              );
+            },
+          )
         ],
       ),
     );
   }
 }
 
-class _NavigationBar extends StatelessWidget {
-  final HomeController controller;
-  const _NavigationBar({Key? key, required this.controller}) : super(key: key);
-
-  void showBottomSheet() {
-    Get.bottomSheet(
-      const CustomBottomSheet(),
-    );
-  }
+class _Banner extends StatelessWidget {
+  final String title;
+  final String color;
+  const _Banner({Key? key, required this.title, required this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 13.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF343434).withOpacity(0.4),
-            const Color(0xFF343434).withOpacity(0.0),
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        height: 140,
+        color: hexToColor(color),
+        child: Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          ElevatedButton(
-            onPressed: controller.onDiscoverPress,
-            child: Icon(
-              Icons.public,
-              color: ThemeConfig.lightTheme.primaryColor,
-              size: 25,
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(10),
-              primary: Colors.white,
-              onPrimary: Colors.red,
-            ),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: ThemeConfig.lightTheme.primaryColor,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: showBottomSheet,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Icon(
-                          CupertinoIcons.gear,
-                          size: 20.0,
-                          color: ThemeConfig.lightTheme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 20),
-                      child: Row(
-                        children: const [
-                          Text(
-                            "Sport",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          SizedBox(width: 10.0),
-                          Icon(
-                            CupertinoIcons.search,
-                            size: 20.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: controller.onCategoryPress,
-            child: Icon(
-              Icons.explore_outlined,
-              color: ThemeConfig.lightTheme.primaryColor,
-              size: 25,
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(10),
-              primary: Colors.white,
-              onPrimary: Colors.red,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -12,20 +12,16 @@ class Messages extends BaseScreen<MessagesController> {
     return const MyScaffold(
       body: _Body(),
       title: "Micheal",
+      centerTitle: false,
       elevation: 1.0,
-      Leftactions: [
-        CircleAvatar(
-          backgroundColor: Colors.black,
-          radius: 18.0,
+      actions: [
+        Icon(
+          Icons.more_vert,
+          size: 30,
         ),
-        SizedBox(width: 15.0),
-        Text(
-          "Micheal",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20.0,
-          ),
-        )
+        SizedBox(
+          width: 8.0,
+        ),
       ],
     );
   }

@@ -1,30 +1,36 @@
-abstract class ICategory {
-  String? id;
-  String? name;
-  String? description;
-  int? code;
+import 'package:flutter/cupertino.dart';
+
+class Gender {
+  static int MALE = 1;
+  static int FEMALE = 0;
 }
 
-abstract class IUser {}
-
-abstract class IGender {
-  String? id;
-  String? name;
-  int? code;
+class PostType {
+  static int TEXT = 0;
+  static int IMAGE = 1;
+  static int AUDIO = 2;
+  static int VIDEO = 3;
+  static int GAME = 4;
 }
 
-abstract class IService {
-  String? id;
-  String? title;
-  String? description;
-  double? price;
-  int? code;
+class Role {
+  static String USER = 'user';
+  static String ADMIN = 'admin';
 }
 
-abstract class IReportType {
-  String? id;
-  String? name;
-  int? code;
+class AccountType {
+  static String FACEBOOK = 'facebook';
+  static String GOOGLE = 'google';
+  static String ADMIN = 'admin';
 }
 
-abstract class IReport {}
+class SocketEvent {
+  static String NEW_POST = 'new_post';
+  static String NEW_QUESTION = 'new_question';
+  static String ON_TYPING = 'on_typing';
+  static String ON_FINISH_TYPING = 'on_finish_typing';
+  static String SEND_MESSAGE = 'send_message';
+  static String RECEIVE_MESSAGE = 'receive_message';
+  static String FRIEND_REQUEST = 'friend_request';
+  static String FRIEND_REQUEST_ACCEPT = 'friend_request_accept';
+}

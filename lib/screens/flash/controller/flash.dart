@@ -1,15 +1,13 @@
 import 'package:mobile/screens/flash/model/flash.dart';
 import 'package:mobile/screens/flash/service/flash.dart';
 import '../../base/controller/base_controller.dart';
-import '../../variables.dart' as globalVariables;
 
 class FlashController extends BaseController<FlashModel, FlashService> {
   FlashController() : super(FlashModel(), FlashService());
 
   @override
   void onInit() async {
-    globalVariables.currentPosition = await this.service.determinePosition();
-    moveOffAllToLogin();
+    Future.delayed(const Duration(milliseconds: 1000), moveOffAllToLogin);
     super.onInit();
   }
 

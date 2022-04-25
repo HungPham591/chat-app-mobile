@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/lang/vi_VN.dart';
 
 import 'en_US.dart';
-import 'pt_BR.dart';
 
 class TranslationService extends Translations {
   static Locale? get locale => Get.deviceLocale;
@@ -10,6 +10,6 @@ class TranslationService extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': en_US,
-        'pt_BR': pt_BR,
+        'vi_VN': vi_VN,
       };
 }

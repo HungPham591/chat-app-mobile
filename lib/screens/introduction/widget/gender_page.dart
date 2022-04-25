@@ -1,25 +1,70 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:mobile/screens/introduction/widget/custom_page.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:mobile/lang/string_constant.dart';
+import 'package:mobile/screens/introduction/controller/introduction.dart';
+import 'package:mobile/shared/constants/colors.dart';
+import 'package:mobile/widgets/my_button.dart';
+import '/shared/shared.dart';
 
 class GenderPage extends StatelessWidget {
-  const GenderPage({Key? key}) : super(key: key);
+  const GenderPage({Key? key, required this.controller}) : super(key: key);
+  final IntroductionController controller;
 
   @override
   Widget build(BuildContext context) {
-    return const CustomPage(title: "What is your gender?", body: _Body());
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              StringConstant.what_is_your_gender.tr,
+              style: Theme.of(context).textTheme.headline2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(top: 70.0),
+            child: _Body(controller: controller),
+          ),
+          Expanded(child: Container()),
+          MyButton(
+            title: StringConstant.continue_button.tr,
+            onTap: controller.onGenderPageContinueButtonOnClick,
+            color: Colors.red,
+            textColor: Colors.white,
+          )
+        ],
+      ),
+    );
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
+  final IntroductionController controller;
+  const _Body({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
-        _MyChoiceChip(title: "Male", selected: true),
-        SizedBox(height: 12),
-        _MyChoiceChip(title: "Female", selected: false),
+      children: [
+        _MyChoiceChip(
+          title: StringConstant.male.tr,
+          selected: controller.model.gender,
+          value: true,
+          controller: controller,
+        ),
+        const SizedBox(height: 12),
+        _MyChoiceChip(
+          title: StringConstant.female.tr,
+          selected: !controller.model.gender,
+          value: false,
+          controller: controller,
+        ),
       ],
     );
   }
@@ -28,37 +73,45 @@ class _Body extends StatelessWidget {
 class _MyChoiceChip extends StatelessWidget {
   final String title;
   final bool selected;
+  final Color choiceChipUnselectedColor = hexToColor("#969896");
+  final Color choiceChipSelectedColors = ColorConstants.secondaryAppColor;
+  final bool value;
+  final IntroductionController controller;
 
-  const _MyChoiceChip({Key? key, required this.title, required this.selected})
+  _MyChoiceChip(
+      {Key? key,
+      required this.title,
+      required this.selected,
+      required this.value,
+      required this.controller})
       : super(key: key);
 
-  @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(canvasColor: Colors.transparent),
-      child: ChoiceChip(
-        disabledColor: Colors.transparent,
-        selectedColor: Colors.transparent,
-        shape: const StadiumBorder(
-          side: BorderSide(
+    return GestureDetector(
+      onTap: () => controller.onGenderSelect(value),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
             width: 1.5,
-            color: Colors.black12,
+            color:
+                selected ? choiceChipSelectedColors : choiceChipUnselectedColor,
           ),
         ),
-        label: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Center(
-            child: Text(
-              title,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: selected
+                  ? choiceChipSelectedColors
+                  : choiceChipUnselectedColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          width: double.infinity,
         ),
-        selected: selected,
+        width: double.infinity,
       ),
     );
   }

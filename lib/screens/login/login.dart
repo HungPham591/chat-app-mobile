@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:mobile/lang/string_constant.dart';
 import 'package:mobile/screens/base/base_screen.dart';
 import 'package:mobile/theme/theme.dart';
 import 'package:mobile/widgets/my_button.dart';
@@ -41,7 +43,7 @@ class _Body extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             width: double.infinity,
             child: MyButton(
-              title: "Sign in with Facebook",
+              title: StringConstant.facebook_signin.tr,
               onTap: controller.onFacebookButtonPress,
               color: Colors.blue,
               textColor: Colors.white,
@@ -52,7 +54,7 @@ class _Body extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             width: double.infinity,
             child: MyButton(
-              title: "Sign in with Google",
+              title: StringConstant.google_signin.tr,
               onTap: controller.onGoogleButtonPress,
               color: Colors.red,
               textColor: Colors.white,

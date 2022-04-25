@@ -31,14 +31,25 @@ class _Body extends StatelessWidget {
         children: [
           Expanded(
             child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
               controller: controller.pageController,
               onPageChanged: controller.onPageChange,
-              children: const [
-                NamePage(),
-                BirthdayPage(),
-                GenderPage(),
-                InterestedInGenderPage(),
-                PhotoPage(),
+              children: [
+                NamePage(
+                  controller: controller,
+                ),
+                BirthdayPage(
+                  controller: controller,
+                ),
+                GenderPage(
+                  controller: controller,
+                ),
+                InterestedInGenderPage(
+                  controller: controller,
+                ),
+                PhotoPage(
+                  controller: controller,
+                ),
               ],
             ),
           ),

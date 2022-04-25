@@ -1,21 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:mobile/lang/string_constant.dart';
 import 'package:mobile/screens/home/model/home.dart';
+import 'package:mobile/screens/home/model/user_post.dart';
 import 'package:mobile/screens/home/service/home.dart';
-import '../../base/controller/base_controller.dart';
-import "package:latlong2/latlong.dart" as latlng;
-import '../../variables.dart' as globalVariables;
+import 'package:mobile/screens/home/widget/conversation_bottom_sheet.dart';
+import 'package:mobile/screens/home/widget/filter_bottom_sheet.dart';
+import 'package:mobile/screens/home/widget/question_dialog.dart';
+import 'package:mobile/shared/utils/model.dart';
 
-class HomeController extends BaseController<HomeModel, HomeService>
-    with SingleGetTickerProviderMixin {
+import '../../base/controller/base_controller.dart';
+
+class HomeController extends BaseController<HomeModel, HomeService> {
   HomeController() : super(HomeModel(), HomeService());
-  late AnimationController animationController;
   @override
   void onInit() {
-    model.currentPosition = globalVariables.currentPosition;
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    animationController.repeat(reverse: true);
+    loadPost();
     super.onInit();
   }
 
@@ -26,7 +26,6 @@ class HomeController extends BaseController<HomeModel, HomeService>
 
   @override
   void onClose() {
-    animationController.dispose();
     super.onClose();
   }
 
@@ -46,17 +45,124 @@ class HomeController extends BaseController<HomeModel, HomeService>
     moveToCategory();
   }
 
-  void onMapTap(var tapPosition, var latLng) {
-    Get.snackbar('title', 'Could not find any user here');
+  void onLikeButtonPress(int index) {
+    model.listPost![index].liked = true;
+    update();
   }
 
-  void onMyMarkerTap() {
-    Get.snackbar('title', 'You are in ghost mode');
+  void onAskUserButtonPress(int index) {
+    UserPost post = model.listPost![index];
+    Get.defaultDialog(
+      title: '${StringConstant.ask.tr} ${post.user?.name}',
+      titleStyle: const TextStyle(fontSize: 20),
+      titlePadding: const EdgeInsets.all(15),
+      contentPadding:
+          const EdgeInsets.only(top: 20, bottom: 5, left: 15, right: 15),
+      content: QuestionDialog(
+        controller: this,
+        userId: post.user?.id ?? "",
+        toUser: true,
+      ),
+    );
   }
 
-  void onUserMarkerTap() {
-    Get.snackbar('title', 'You are in ghost mode');
+  void onNewConversationButtonPress() {
+    Get.bottomSheet(
+      ConversationBottomSheet(
+        controller: this,
+      ),
+    );
   }
 
-  void loadMore() {}
+  void onAskButtonPress() {
+    Get.back();
+    Get.defaultDialog(
+      title: StringConstant.new_question.tr,
+      titleStyle: const TextStyle(fontSize: 20),
+      titlePadding: const EdgeInsets.all(15),
+      contentPadding:
+          const EdgeInsets.only(top: 20, bottom: 5, left: 15, right: 15),
+      content: QuestionDialog(
+        controller: this,
+        toUser: false,
+      ),
+    );
+  }
+
+  void onVideoCallButtonPress() {
+    Get.back();
+  }
+
+  void onVoiceCallButtonPress() {
+    Get.back();
+  }
+
+  void onButtonFilterPress() {
+    Get.bottomSheet(
+      FilterBottomSheet(
+        controller: this,
+      ),
+    );
+  }
+
+  void onFilterCompleteButtonPress() {}
+
+  void onSendQuestionToUserButtonPress(String userId, String question) {}
+
+  void onSendQuestionButtonPress(String question) {}
+
+  void loadPost() {
+    model.listPost = [
+      UserPost(
+        user: const User(
+          avatar: 'assets/images/girl.jpg',
+          birthday: 1999,
+          name: "Hung Pham",
+        ),
+        question: const Question(
+          content: 'What is your name?',
+        ),
+        content: "My name is Hung",
+      ),
+      UserPost(
+        user: const User(
+          avatar: 'assets/images/girl.jpg',
+          birthday: 1999,
+          name: "Hung Pham",
+        ),
+        question: const Question(
+          content: 'What is your name?',
+        ),
+        content: "My name is Hung",
+      ),
+      UserPost(
+        user: const User(
+          avatar: 'assets/images/girl.jpg',
+          birthday: 1999,
+          name: "Hung Pham",
+        ),
+        question: const Question(
+          content: 'What is your name?',
+        ),
+        content: "My name is Hung",
+      ),
+    ];
+  }
+
+  String? questionValidator(value) {
+    // if (value?.isEmpty) {
+    //   return StringConstant.please_enter_your_name.tr;
+    // } else if (!Regex.isName(value)) {
+    //   return StringConstant.please_enter_your_name.tr;
+    // } else {
+    //   return null;
+    // }
+    return null;
+  }
+
+  int getAge(int birthday) {
+    DateTime now = DateTime.now();
+    DateTime date = DateTime(now.year, now.month, now.day);
+    return date.year - birthday;
+  }
 }

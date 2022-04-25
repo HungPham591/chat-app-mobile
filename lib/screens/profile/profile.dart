@@ -10,13 +10,15 @@ class Profile extends BaseScreen<ProfileController> {
   @override
   Widget body() {
     return MyScaffold(
-      body: Column(
-        children: [
-          const _Profile(),
-          _Menu(
-            controller: controller,
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const _Profile(),
+            _Menu(
+              controller: controller,
+            ),
+          ],
+        ),
       ),
       title: "Profile",
     );
@@ -99,37 +101,35 @@ class _Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.only(top: 20),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: ListView(
-          children: [
-            GestureDetector(
-              onTap: controller.onSettingTap,
-              child: const _ItemMenu(
-                title: "Thiết lặp",
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: controller.onSettingTap,
+            child: const _ItemMenu(
+              title: "Thiết lặp",
             ),
-            GestureDetector(
-              onTap: controller.onServiceTap,
-              child: const _ItemMenu(
-                title: "Dịch vụ",
-              ),
+          ),
+          GestureDetector(
+            onTap: controller.onServiceTap,
+            child: const _ItemMenu(
+              title: "Dịch vụ",
             ),
-            GestureDetector(
-              onTap: controller.onAboutTap,
-              child: const _ItemMenu(
-                title: "Về ứng dụng",
-              ),
+          ),
+          GestureDetector(
+            onTap: controller.onAboutTap,
+            child: const _ItemMenu(
+              title: "Về ứng dụng",
             ),
-            GestureDetector(
-              child: const _ItemMenu(
-                title: "Đăng xuất",
-              ),
+          ),
+          GestureDetector(
+            child: const _ItemMenu(
+              title: "Đăng xuất",
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-class _BottomSheet extends StatelessWidget {
-  const _BottomSheet({Key? key}) : super(key: key);
+class MyBottomSheet extends StatelessWidget {
+  final String title;
+  final Widget body;
+  const MyBottomSheet({Key? key, required this.title, required this.body})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +29,18 @@ class _BottomSheet extends StatelessWidget {
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
-            child: Text(
-              "Search",
-              style: Theme.of(context).textTheme.headline2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                body
+              ],
             ),
           ),
         ],
